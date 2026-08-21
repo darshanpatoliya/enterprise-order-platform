@@ -28,23 +28,7 @@ The platform will provide a centralized system for coordinating the complete ord
 ### Core Business Workflow
 
 
-Customer
-    ↓
-Product Selection
-    ↓
-Order Creation
-    ↓
-Inventory Reservation
-    ↓
-Payment
-    ↓
-Order Confirmation
-    ↓
-Fulfillment
-    ↓
-Shipment
-    ↓
-Delivery
+Customer -> Product Selection -> Order Creation -> Inventory Reservation -> Payment Order Confirmation -> Fulfillment -> Shipment -> Delivery
 
 
 ---
