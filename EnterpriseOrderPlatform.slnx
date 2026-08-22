@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/EnterpriseOrderPlatform.Api/EnterpriseOrderPlatform.Api.csproj" />
+    <Project Path="src/EnterpriseOrderPlatform.Application/EnterpriseOrderPlatform.Application.csproj" />
+    <Project Path="src/EnterpriseOrderPlatform.Domain/EnterpriseOrderPlatform.Domain.csproj" />
+    <Project Path="src/EnterpriseOrderPlatform.Infrastructure/EnterpriseOrderPlatform.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/EnterpriseOrderPlatform.IntegrationTests/EnterpriseOrderPlatform.IntegrationTests.csproj" />
+    <Project Path="tests/EnterpriseOrderPlatform.UnitTests/EnterpriseOrderPlatform.UnitTests.csproj" />
+  </Folder>
+</Solution>
