@@ -28,7 +28,7 @@ namespace EnterpriseOrderPlatform.Domain.ValueObjects
             Currency = currency.ToUpperInvariant();
             Amount = amount;
         }
-
+        
         public static Money Zero(string currency)
         {
             return new Money(0m, currency);

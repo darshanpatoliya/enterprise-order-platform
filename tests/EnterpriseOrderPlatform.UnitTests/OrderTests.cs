@@ -139,4 +139,239 @@ public class OrderTests
         Assert.Equal(0m, total.Amount);
         Assert.Equal("CAD", total.Currency);
     }
+
+
+
+    // Order Status Transition Tests
+    [Fact]
+    public void Confirm_WhenOrderIsPendingPayment_ChangesStatusToConfirmed()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        // Act
+        order.Confirm();
+
+        // Assert
+        Assert.Equal(OrderStatus.Confirmed, order.Status);
+    }
+    [Fact]
+    public void Confirm_WhenOrderIsNotPendingPayment_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Confirm();
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.Confirm());
+    }
+
+    [Fact]
+    public void StartPreparing_WhenOrderIsConfirmed_ChangesStatusToPreparing()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Confirm();
+
+        // Act
+        order.StartPreparing();
+
+        // Assert
+        Assert.Equal(OrderStatus.Preparing, order.Status);
+    }
+    [Fact]
+    public void StartPreparing_WhenOrderIsNotConfirmed_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.StartPreparing());
+    }
+
+
+    [Fact]
+    public void Ship_WhenOrderIsPreparing_ChangesStatusToShipped()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Confirm();
+        order.StartPreparing();
+
+        // Act
+        order.Ship();
+
+        // Assert
+        Assert.Equal(OrderStatus.Shipped, order.Status);
+    }
+    [Fact]
+    public void Ship_WhenOrderIsNotPreparing_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.Ship());
+    }
+
+
+    [Fact]
+    public void Deliver_WhenOrderIsShipped_ChangesStatusToDelivered()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Confirm();
+        order.StartPreparing();
+        order.Ship();
+
+        // Act
+        order.Deliver();
+
+        // Assert
+        Assert.Equal(OrderStatus.Delivered, order.Status);
+    }
+    [Fact]
+    public void Deliver_WhenOrderIsNotShipped_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.Deliver());
+    }
+
+
+    // Cancel Order Tests
+    [Fact]
+    public void Cancel_WhenOrderIsPendingPayment_ChangesStatusToCancelled()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        // Act
+        order.Cancel();
+
+        // Assert
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+    [Fact]
+    public void Cancel_WhenOrderIsConfirmed_ChangesStatusToCancelled()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Confirm();
+
+        // Act
+        order.Cancel();
+
+        // Assert
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+    [Fact]
+    public void Cancel_WhenOrderIsPreparing_ChangesStatusToCancelled()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        order.Confirm();
+        order.StartPreparing();
+
+        // Act
+        order.Cancel();
+
+        // Assert
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+
+
+    // Canceling an order that has already been shipped is not allowed, and should throw an exception.
+    [Fact]
+    public void Cancel_WhenOrderIsShipped_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        order.Confirm();
+        order.StartPreparing();
+        order.Ship();
+
+        // Act & Assert
+
+        // Attempting to cancel a shipped order should throw an InvalidOperationException.
+        Assert.Throws<InvalidOperationException>(
+            () => order.Cancel());
+
+        // The failed cancellation must not change the order status.
+        Assert.Equal(OrderStatus.Shipped, order.Status);
+    }
+
+    // Canceling an order that has already been delivered is not allowed, and should throw an exception.
+    [Fact]
+    public void Cancel_WhenOrderIsDelivered_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        order.Confirm();
+        order.StartPreparing();
+        order.Ship();
+        order.Deliver();
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.Cancel());
+
+        Assert.Equal(OrderStatus.Delivered, order.Status);
+    }
+
+
+    // Confirming an order that has already been cancelled is not allowed, and should throw an exception.
+    [Fact]
+    public void Confirm_WhenOrderIsCancelled_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Cancel();
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.Confirm());
+
+        // The failed transition must not change the status.
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+
+    // Starting to prepare an order that has already been cancelled is not allowed, and should throw an exception.
+    [Fact]
+    public void StartPreparing_WhenOrderIsCancelled_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Cancel();
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.StartPreparing());
+
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+
+    // Shipping an order that has already been cancelled is not allowed, and should throw an exception.
+    [Fact]
+    public void Ship_WhenOrderIsCancelled_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+        order.Cancel();
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.Ship());
+
+        Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
 }
