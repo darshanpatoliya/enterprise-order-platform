@@ -58,6 +58,18 @@ namespace EnterpriseOrderPlatform.Domain.ValueObjects
             return new Money(Amount - other.Amount, Currency);
         }
 
+        public Money Multiply(int multiplier)
+        {
+            if (multiplier < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(multiplier),
+                    "Money multiplier cannot be negative.");
+            }
+
+            return new Money(Amount * multiplier, Currency);
+        }
+
         private void EnsureSameCurrency(Money other)
         {
             if (!string.Equals(Currency, other.Currency, StringComparison.Ordinal))

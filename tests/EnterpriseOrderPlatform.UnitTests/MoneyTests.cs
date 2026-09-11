@@ -140,5 +140,42 @@ public class MoneyTests
         Assert.Single(money);
     }
 
+    // Multiply method tests
+    [Fact]
+    public void Multiply_WithPositiveMultiplier_ReturnsMultipliedAmount()
+    {
+        // Arrange
+        var money = new Money(15m, "CAD");
+
+        // Act
+        var result = money.Multiply(3);
+
+        // Assert
+        Assert.Equal(new Money(45m, "CAD"), result);
+    }
+
+    [Fact]
+    public void Multiply_WithZeroMultiplier_ReturnsZeroMoney()
+    {
+        // Arrange
+        var money = new Money(15m, "CAD");
+
+        // Act
+        var result = money.Multiply(0);
+
+        // Assert
+        Assert.Equal(new Money(0m, "CAD"), result);
+    }
+
+    [Fact]
+    public void Multiply_WithNegativeMultiplier_ThrowsException()
+    {
+        // Arrange
+        var money = new Money(15m, "CAD");
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => money.Multiply(-1));
+    }
 
 }
