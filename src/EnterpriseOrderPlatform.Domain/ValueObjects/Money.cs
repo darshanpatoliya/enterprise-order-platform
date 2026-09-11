@@ -29,6 +29,11 @@ namespace EnterpriseOrderPlatform.Domain.ValueObjects
             Amount = amount;
         }
 
+        public static Money Zero(string currency)
+        {
+            return new Money(0m, currency);
+        }
+
         public Money Add(Money other)
         {
             ArgumentNullException.ThrowIfNull(other);
