@@ -58,7 +58,13 @@ public sealed class Order
     {
         if (Status != OrderStatus.PendingPayment)
         {
-            throw new InvalidOperationException("Only an order with pending payment can be confirmed.");
+            throw new InvalidOperationException(
+                "Only an order with pending payment can be confirmed.");
+        }
+        if (_items.Count == 0)
+        {
+            throw new InvalidOperationException(
+                "An order must contain at least one item before it can be confirmed.");
         }
 
         Status = OrderStatus.Confirmed;
@@ -67,7 +73,8 @@ public sealed class Order
     {
         if (Status != OrderStatus.Confirmed)
         {
-            throw new InvalidOperationException("Only a confirmed order can start preparing.");
+            throw new InvalidOperationException(
+                "Only a confirmed order can start preparing.");
         }
 
         Status = OrderStatus.Preparing;
@@ -76,7 +83,8 @@ public sealed class Order
     {
         if (Status != OrderStatus.Preparing)
         {
-            throw new InvalidOperationException("Only an order that is being prepared can be shipped.");
+            throw new InvalidOperationException(
+                "Only an order that is being prepared can be shipped.");
         }
 
         Status = OrderStatus.Shipped;
@@ -85,7 +93,8 @@ public sealed class Order
     {
         if (Status != OrderStatus.Shipped)
         {
-            throw new InvalidOperationException("Only a shipped order can be delivered.");
+            throw new InvalidOperationException(
+                "Only a shipped order can be delivered.");
         }
 
         Status = OrderStatus.Delivered;
@@ -94,7 +103,8 @@ public sealed class Order
     {
         if (Status == OrderStatus.Shipped || Status == OrderStatus.Delivered)
         {
-            throw new InvalidOperationException("A shipped or delivered order cannot be cancelled.");
+            throw new InvalidOperationException(
+                "A shipped or delivered order cannot be cancelled.");
         }
 
         Status = OrderStatus.Cancelled;

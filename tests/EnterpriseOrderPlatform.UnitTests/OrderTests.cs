@@ -147,7 +147,7 @@ public class OrderTests
     public void Confirm_WhenOrderIsPendingPayment_ChangesStatusToConfirmed()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
 
         // Act
         order.Confirm();
@@ -159,7 +159,7 @@ public class OrderTests
     public void Confirm_WhenOrderIsNotPendingPayment_ThrowsException()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
         order.Confirm();
 
         // Act & Assert
@@ -171,7 +171,7 @@ public class OrderTests
     public void StartPreparing_WhenOrderIsConfirmed_ChangesStatusToPreparing()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
         order.Confirm();
 
         // Act
@@ -196,7 +196,7 @@ public class OrderTests
     public void Ship_WhenOrderIsPreparing_ChangesStatusToShipped()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
         order.Confirm();
         order.StartPreparing();
 
@@ -222,7 +222,7 @@ public class OrderTests
     public void Deliver_WhenOrderIsShipped_ChangesStatusToDelivered()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
         order.Confirm();
         order.StartPreparing();
         order.Ship();
@@ -262,7 +262,7 @@ public class OrderTests
     public void Cancel_WhenOrderIsConfirmed_ChangesStatusToCancelled()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
         order.Confirm();
 
         // Act
@@ -275,8 +275,7 @@ public class OrderTests
     public void Cancel_WhenOrderIsPreparing_ChangesStatusToCancelled()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
-
+        var order = CreateOrderWithItem();
         order.Confirm();
         order.StartPreparing();
 
@@ -293,7 +292,7 @@ public class OrderTests
     public void Cancel_WhenOrderIsShipped_ThrowsException()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
 
         order.Confirm();
         order.StartPreparing();
@@ -314,7 +313,7 @@ public class OrderTests
     public void Cancel_WhenOrderIsDelivered_ThrowsException()
     {
         // Arrange
-        var order = new Order(Guid.NewGuid());
+        var order = CreateOrderWithItem();
 
         order.Confirm();
         order.StartPreparing();
@@ -373,5 +372,34 @@ public class OrderTests
             () => order.Ship());
 
         Assert.Equal(OrderStatus.Cancelled, order.Status);
+    }
+
+
+    [Fact]
+    public void Confirm_WhenOrderHasNoItems_ThrowsException()
+    {
+        // Arrange
+        var order = new Order(Guid.NewGuid());
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(
+            () => order.Confirm());
+
+        // The failed confirmation must not change the status.
+        Assert.Equal(OrderStatus.PendingPayment, order.Status);
+    }
+
+    // Helper method to create an order with a single item for testing purposes.
+    private static Order CreateOrderWithItem()
+    {
+        var order = new Order(Guid.NewGuid());
+
+        order.AddItem(
+            Guid.NewGuid(),
+            "Test Product",
+            new Money(10m, "CAD"),
+            1);
+
+        return order;
     }
 }
