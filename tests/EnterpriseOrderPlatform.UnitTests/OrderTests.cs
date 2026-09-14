@@ -155,6 +155,7 @@ public class OrderTests
         // Assert
         Assert.Equal(OrderStatus.Confirmed, order.Status);
     }
+
     [Fact]
     public void Confirm_WhenOrderIsNotPendingPayment_ThrowsException()
     {
@@ -163,8 +164,7 @@ public class OrderTests
         order.Confirm();
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(
-            () => order.Confirm());
+        Assert.Throws<InvalidOperationException>(() => order.Confirm());
     }
 
     [Fact]
@@ -294,6 +294,7 @@ public class OrderTests
         // Arrange
         var order = CreateOrderWithItem();
 
+
         order.Confirm();
         order.StartPreparing();
         order.Ship();
@@ -327,8 +328,6 @@ public class OrderTests
         Assert.Equal(OrderStatus.Delivered, order.Status);
     }
 
-
-    // Confirming an order that has already been cancelled is not allowed, and should throw an exception.
     [Fact]
     public void Confirm_WhenOrderIsCancelled_ThrowsException()
     {
@@ -337,10 +336,7 @@ public class OrderTests
         order.Cancel();
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(
-            () => order.Confirm());
-
-        // The failed transition must not change the status.
+        Assert.Throws<InvalidOperationException>(() => order.Confirm());
         Assert.Equal(OrderStatus.Cancelled, order.Status);
     }
 
@@ -374,7 +370,6 @@ public class OrderTests
         Assert.Equal(OrderStatus.Cancelled, order.Status);
     }
 
-
     [Fact]
     public void Confirm_WhenOrderHasNoItems_ThrowsException()
     {
@@ -382,10 +377,7 @@ public class OrderTests
         var order = new Order(Guid.NewGuid());
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(
-            () => order.Confirm());
-
-        // The failed confirmation must not change the status.
+        Assert.Throws<InvalidOperationException>(() => order.Confirm());
         Assert.Equal(OrderStatus.PendingPayment, order.Status);
     }
 

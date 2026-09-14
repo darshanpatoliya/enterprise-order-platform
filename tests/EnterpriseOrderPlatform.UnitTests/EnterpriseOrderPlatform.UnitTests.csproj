@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\EnterpriseOrderPlatform.Application\EnterpriseOrderPlatform.Application.csproj" />
     <ProjectReference Include="..\..\src\EnterpriseOrderPlatform.Domain\EnterpriseOrderPlatform.Domain.csproj" />
   </ItemGroup>
 

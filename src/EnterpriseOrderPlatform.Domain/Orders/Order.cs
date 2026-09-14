@@ -61,6 +61,7 @@ public sealed class Order
             throw new InvalidOperationException(
                 "Only an order with pending payment can be confirmed.");
         }
+
         if (_items.Count == 0)
         {
             throw new InvalidOperationException(
@@ -69,6 +70,7 @@ public sealed class Order
 
         Status = OrderStatus.Confirmed;
     }
+
     public void StartPreparing()
     {
         if (Status != OrderStatus.Confirmed)
